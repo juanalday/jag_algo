@@ -2,6 +2,7 @@
 #define JAG_ALGO_LCP_ARRAY_HPP
 
 #include "suffix_array.hpp"
+
 #include <algorithm>
 #include <string>
 #include <utility>
@@ -56,5 +57,4 @@ namespace jag::algo {
 
 }
 
-
-#endif JAG_ALGO_LCP_ARRAY_HPP
+#endif // JAG_ALGO_LCP_ARRAY_HPP
