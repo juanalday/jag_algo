@@ -1,0 +1,5 @@
+if(EXISTS "C:/dev/github.com/jag/jag_algo.git/out/build/x64-Debug/algorithms/algorithms.t[1]_tests.cmake")
+  include("C:/dev/github.com/jag/jag_algo.git/out/build/x64-Debug/algorithms/algorithms.t[1]_tests.cmake")
+else()
+  add_test(algorithms.t_NOT_BUILT algorithms.t_NOT_BUILT)
+endif()

@@ -1,0 +1,7 @@
+add_test([=[Algorithms.bruteForceSuffixArray]=]  C:/dev/github.com/jag/jag_algo.git/out/build/x64-Debug/algorithms/algorithms.t.exe [==[--gtest_filter=Algorithms.bruteForceSuffixArray]==] --gtest_also_run_disabled_tests)
+set_tests_properties([=[Algorithms.bruteForceSuffixArray]=]  PROPERTIES WORKING_DIRECTORY C:/dev/github.com/jag/jag_algo.git/out/build/x64-Debug/algorithms SKIP_REGULAR_EXPRESSION [==[\[  SKIPPED \]]==])
+add_test([=[Algorithms.suffixArray]=]  C:/dev/github.com/jag/jag_algo.git/out/build/x64-Debug/algorithms/algorithms.t.exe [==[--gtest_filter=Algorithms.suffixArray]==] --gtest_also_run_disabled_tests)
+set_tests_properties([=[Algorithms.suffixArray]=]  PROPERTIES WORKING_DIRECTORY C:/dev/github.com/jag/jag_algo.git/out/build/x64-Debug/algorithms SKIP_REGULAR_EXPRESSION [==[\[  SKIPPED \]]==])
+add_test([=[Algorithms.lcpArray]=]  C:/dev/github.com/jag/jag_algo.git/out/build/x64-Debug/algorithms/algorithms.t.exe [==[--gtest_filter=Algorithms.lcpArray]==] --gtest_also_run_disabled_tests)
+set_tests_properties([=[Algorithms.lcpArray]=]  PROPERTIES WORKING_DIRECTORY C:/dev/github.com/jag/jag_algo.git/out/build/x64-Debug/algorithms SKIP_REGULAR_EXPRESSION [==[\[  SKIPPED \]]==])
+set(  algorithms.t_TESTS Algorithms.bruteForceSuffixArray Algorithms.suffixArray Algorithms.lcpArray)

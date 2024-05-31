@@ -1,0 +1,21 @@
+# ninja log v5
+25	1861	7388461217070964	_deps/googletest-build/googletest/CMakeFiles/gtest_main.dir/src/gtest_main.cc.obj	7951faab9f83bfbf
+11	3781	7388461236212693	_deps/googletest-build/googlemock/CMakeFiles/gmock_main.dir/__/googletest/src/gtest-all.cc.obj	62ce109c06e7fd8b
+18	2081	7388461219281154	_deps/googletest-build/googlemock/CMakeFiles/gmock_main.dir/src/gmock_main.cc.obj	943df172946bfe34
+15	2628	7388461224438072	_deps/googletest-build/googlemock/CMakeFiles/gmock_main.dir/src/gmock-all.cc.obj	3897a5d9c895f592
+1876	2373	7388461637650658	algorithms/algorithms.t[1]_tests.cmake	2571a97d6445a461
+8	2629	7388461224028068	_deps/googletest-build/googlemock/CMakeFiles/gmock.dir/src/gmock-all.cc.obj	631d0d6379bc80c9
+22	3803	7388461236442633	_deps/googletest-build/googletest/CMakeFiles/gtest.dir/src/gtest-all.cc.obj	c7277aa72ee024b6
+25	103	7388461614809129	lib/gtest.lib	56633478bef84dfb
+4	3953	7388461237752670	_deps/googletest-build/googlemock/CMakeFiles/gmock.dir/__/googletest/src/gtest-all.cc.obj	2b005a5e7818d25d
+6	1766	7388465299528248	algorithms/CMakeFiles/algorithms.t.dir/string_array.t.cpp.obj	93063281878613e2
+15	110	7388461614869114	lib/gmock.lib	9d483d9454ff5ae1
+21	114	7388461614919113	lib/gmock_main.lib	39d28414ccec4694
+104	148	7388461615388219	lib/gtest_main.lib	f21ec00cc91982a9
+1876	2373	7388461637650658	algorithms/algorithms.t.exe	2571a97d6445a461
+1876	2373	7388461637650658	C:/dev/github.com/jag/jag_algo.git/out/build/x64-Debug/algorithms/algorithms.t[1]_tests.cmake	2571a97d6445a461
+5	1802	7388466456189683	algorithms/CMakeFiles/algorithms.t.dir/suffix_array.t.cpp.obj	e9503b6176cd2706
+16	1663	7388466604421470	algorithms/CMakeFiles/algorithms.t.dir/lcp_array.t.cpp.obj	56422015c86f096d
+1663	2008	7388466607921548	algorithms/algorithms.t.exe	d515763b0e0250c1
+1663	2008	7388466607921548	algorithms/algorithms.t[1]_tests.cmake	d515763b0e0250c1
+1663	2008	7388466607921548	C:/dev/github.com/jag/jag_algo.git/out/build/x64-Debug/algorithms/algorithms.t[1]_tests.cmake	d515763b0e0250c1
