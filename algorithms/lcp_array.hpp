@@ -9,6 +9,7 @@
 #include <vector>
 
 namespace jag::algo {
+
 	// Longest Common Prefix array
 	inline std::vector<int> lcpArray(std::string const& str, std::vector<int> const& sa)
 	{
@@ -48,13 +49,13 @@ namespace jag::algo {
 	}
 
 	inline std::vector<std::pair<int, int>> suffixLcpArray(std::string const& str) {
-		std::vector const suffixes = suffixArray(str);
-		std::vector const lcp = lcpArray(str, suffixes);
+		std::vector<int> const suffixes = suffixArray(str);
+		std::vector<int> const lcp = lcpArray(str, suffixes);
 		std::vector<std::pair<int, int>> ret(str.size());
 		transform(suffixes.cbegin(), suffixes.cend(), lcp.cbegin(), ret.begin(), [](int start, int len) noexcept { return std::make_pair(start, len); });
 		return ret;
 	}
 
-}
+} // namespace jag::algo
 
 #endif // JAG_ALGO_LCP_ARRAY_HPP

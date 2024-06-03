@@ -27,5 +27,4 @@ TEST(Algorithms, suffixLcpArray)
 	EXPECT_THAT(suffixLcpArray("AAAAAA$"), ElementsAre(Pair(6, 0), Pair(5, 0), Pair(4, 1), Pair(3, 2), Pair(2, 3), Pair(1, 4), Pair(0, 5)));
 	EXPECT_THAT(suffixLcpArray("ABRACADABRA$"), ElementsAre(Pair(11, 0), Pair(10, 0), Pair(7, 1), Pair(0, 4), Pair(3, 1), Pair(5, 1), Pair(8, 0), Pair(1, 3), Pair(4, 0), Pair(6, 0), Pair(9, 0), Pair(2, 2)));
 	EXPECT_THAT(suffixLcpArray("GATAGACA$"), ElementsAre(Pair(8, 0), Pair(7, 0), Pair(5, 1), Pair(3, 1), Pair(1, 1), Pair(6, 0), Pair(4, 0), Pair(0, 2), Pair(2, 0)));
-
 }
