@@ -7,6 +7,7 @@
 #include <vector>
 
 namespace jag::algo {
+
     class SuffixAutomaton {
     public:
         struct State {
@@ -33,19 +34,20 @@ namespace jag::algo {
                 append(c);
 
             finalize();
-
-            std::vector<std::vector<int>> statesPerLen(s.length() + 1);
-            for (int i  = 0; i < static_cast<int>(m_states.size()); ++i)
-                statesPerLen[m_states[i].m_length].push_back(i);
-            for (auto it = statesPerLen.rbegin(); it != statesPerLen.rend(); ++it)
-                for (auto ind : *it)
-                    if (m_states[ind].m_link != -1)
-                        m_states[m_states[ind].m_link].m_size += m_states[ind].m_size;
         }
 
         SuffixAutomaton& finalize() {
 			for (int i = m_last; i != -1; i = m_states[i].m_link)
 				m_states[i].m_final = true;
+
+            std::vector<std::vector<int>> statesPerLen(1 + maxLen());
+            for (int i = 0; i < static_cast<int>(m_states.size()); ++i)
+                statesPerLen[m_states[i].m_length].push_back(i);
+
+            for (auto it = statesPerLen.rbegin(); it != statesPerLen.rend(); ++it)
+                for (auto ind : *it)
+                    if (m_states[ind].m_link != -1)
+                        m_states[m_states[ind].m_link].m_size += m_states[ind].m_size;
 			return *this;
 		}
 
@@ -61,8 +63,8 @@ namespace jag::algo {
             auto itNext = m_states[stateIndex].m_edges.find(c);
             if (itNext != end(m_states[stateIndex].m_edges))
                 return itNext->second;
-            else
-                return -1;
+
+            return -1;
         }
 
         int size(int index) const { return m_states[index].m_size; }
@@ -74,9 +76,11 @@ namespace jag::algo {
         bool contains(const std::string& s) const { return traverse(s) != -1; }
         bool isSuffix(const std::string& s) const { return isFinal(traverse(s)); }
 
-        constexpr bool empty() const noexcept { return m_states.size() <2; }
-        constexpr size_t size() const noexcept { return m_states.size();}
+        bool empty() const noexcept { return m_states.size() <2; }
+        size_t size() const noexcept { return m_states.size();}
         State const& operator[](size_t i) const { return m_states[i]; }
+        int count(std::string const& s) const { return size(traverse(s)); }
+        int maxLen() const noexcept { return std::max_element(m_states.begin(), m_states.end(), [](State const& lhs, State const& rhs) {return lhs.m_length < rhs.m_length; })->m_length; }
 
         SuffixAutomaton& append(char c) {
             // We add new state corresponding to s + c

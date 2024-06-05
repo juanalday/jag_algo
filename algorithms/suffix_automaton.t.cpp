@@ -43,7 +43,7 @@ TEST(SuffixAutomaton, contains) {
 	EXPECT_TRUE(sa.contains("abcbc"));
 	EXPECT_FALSE(sa.contains("bb"));
 }
-TEST(SuffixAutomatonTest, traverse) {
+TEST(SuffixAutomaton, traverse) {
 	SuffixAutomaton sa("abcbc");
 	EXPECT_EQ(6, sa.traverse("cbc"));
 	EXPECT_EQ(6, sa.traverse("abcbc"));
@@ -56,4 +56,14 @@ TEST(SuffixAutomatonTest, traverse) {
 
 	EXPECT_EQ(-1, sa.traverse("ba"));
 	EXPECT_EQ(-1, sa.traverse("ac"));
+}
+
+TEST(SuffixAutomaton, EncountersCount) {
+	SuffixAutomaton sa("abcbcbcd");
+	EXPECT_EQ(1, sa.count("ab"));
+	EXPECT_EQ(3, sa.count("bc"));
+	EXPECT_EQ(2, sa.count("cb"));
+	EXPECT_EQ(2, sa.count("bcb"));
+	EXPECT_EQ(1, sa.count("bcd"));
+	EXPECT_EQ(1, sa.count("cd"));
 }
