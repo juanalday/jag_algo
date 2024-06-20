@@ -23,6 +23,7 @@ namespace jag::algo {
 
 			Node(int start, int end, int link) : m_start(start), m_end(end), m_link(link) {}
 			bool contains(char c) const noexcept { return m_edges.count(c) != 0; }
+			int at(char c) const noexcept { auto it = m_edges.find(c); return it == m_edges.end() ? -1 : it->second; }
 
 			int edge_length(int pos) {
 				return std::max(m_end, pos + 1) - m_start;
@@ -41,7 +42,9 @@ namespace jag::algo {
 
 		std::vector <Node> m_nodes;
 		std::string m_data;
-		int m_root, m_needSL, m_activeNode, m_ActiveEdge, m_activeLen, m_remainder;
+		int m_needSL, m_activeNode, m_ActiveEdge, m_activeLen, m_remainder;
+
+		using const_iterator = std::vector<Node>::const_iterator;
 
 		int new_node(int start, int end = -1) {
 			m_nodes.emplace_back(start, end, 0);
@@ -76,8 +79,7 @@ namespace jag::algo {
 
 
 		SuffixTree()
-			: m_root(0)
-			, m_needSL(0)
+			: m_needSL(0)
 			, m_activeNode(0)
 			, m_ActiveEdge(0)
 			, m_activeLen(0)
@@ -88,6 +90,22 @@ namespace jag::algo {
 		SuffixTree(std::string const& str) : SuffixTree() {
 			for_each(str.begin(), str.end(), [&](char c) { add(c); });
 			for_each(m_nodes.begin(), m_nodes.end(), [&](Node& node) { node.adjust(m_data); });
+		}
+
+		void reset(std::string const& str)
+		{
+			SuffixTree(str).swap(*this);
+		}
+
+		void swap(SuffixTree& other) noexcept {
+			using std::swap;
+			swap(m_nodes, other.m_nodes);
+			swap(m_data, other.m_data);
+			swap(m_needSL, other.m_needSL);
+			swap(m_activeNode, other.m_activeNode);
+			swap(m_ActiveEdge, other.m_ActiveEdge);
+			swap(m_activeLen, other.m_activeLen);
+			swap(m_remainder, other.m_remainder);
 		}
 
 		void add(char c) {
@@ -137,7 +155,7 @@ namespace jag::algo {
 				// 1. active node is not changed
 				// 2. active length is decremented
 				// 3. active edge is shifted right(to the first character of the next suffix we must insert)
-				if (m_activeNode == m_root && m_activeLen > 0) { //rule 1
+				if ( (m_activeNode == 0) && (m_activeLen > 0) ) { //rule 1
 					--m_activeLen;
 					m_ActiveEdge = pos - m_remainder + 1;
 				}
@@ -147,9 +165,64 @@ namespace jag::algo {
 					// we must follow the suffix link and set the active node to the node it points to.
 					// If there is no a suffix link, set the active node to the root node.
 					// Either way, active edge and active length stay unchanged.
-					m_activeNode = m_nodes[m_activeNode].m_link > 0 ? m_nodes[m_activeNode].m_link : m_root;
+					m_activeNode = m_nodes[m_activeNode].m_link > 0 ? m_nodes[m_activeNode].m_link : 0;
 				}
 			}
+		}
+
+		const_iterator end() const noexcept { return m_nodes.end(); }
+
+		const_iterator find(std::string const& str) const{
+			size_t patternIndex = 0; // Index to track position in the pattern string
+
+			const_iterator nodeIter = m_nodes.begin(); // Start from the root node
+			while (patternIndex < str.size()) {
+				char c = str[patternIndex];
+				// Check if the current node has an edge starting with the current character
+				if (!nodeIter->contains(c)) {
+					return m_nodes.end(); // Pattern not found if the edge doesn't exist
+				}
+				// Move to the next node along the edge labeled with currentChar
+				int nextNode = nodeIter->m_edges.at(c);
+				nodeIter = next(m_nodes.begin(), nextNode);
+				auto& node = *nodeIter;
+				auto view = node.m_str; // Substring represented by the edge [start, end]
+				int start = node.m_start; // Start index of the substring represented by the edge
+				int end = (node.m_end == -1) ? static_cast<int>(m_data.size()) : node.m_end; // Correct end index
+				for (int i = start; i < end && patternIndex < str.size(); i++, patternIndex++) {
+					if (m_data[i] != str[patternIndex]) {
+						return m_nodes.end(); // Pattern not found
+					}
+				}
+				
+			}
+
+			return nodeIter;
+		}
+
+		bool contains(std::string const& str) const {return find(str) != m_nodes.end();}
+			
+		
+		std::vector<int> collectLeaves(int node) {
+			std::vector<int> result;
+			std::vector<int> stack = { node };
+
+			while (!stack.empty()) {
+				int currentNode = stack.back();
+				stack.pop_back();
+
+				if (m_nodes[currentNode].m_edges.empty()) {
+					// This is a leaf node
+					result.push_back(m_nodes[currentNode].m_start - m_activeLen + 1);
+				}
+				else {
+					for (const auto& [key, value] : m_nodes[currentNode].m_edges) {
+						stack.push_back(value);
+					}
+				}
+			}
+
+			return result;
 		}
 	};
 
