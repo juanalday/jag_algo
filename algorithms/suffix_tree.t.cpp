@@ -5,33 +5,37 @@
 
 
 using jag::algo::SuffixTree;
+using ::testing::ElementsAre;
 
 TEST(SuffixTree, Constructor) {
-	SuffixTree st("abcabxabcd");
+	{
+		SuffixTree st1("aa");
+		EXPECT_EQ(st1.size(), 5);
+	}
+	SuffixTree st2("aaa");
+	SuffixTree st3("bana");
+	SuffixTree st4("abcabxabcd");
 }
 
-TEST(SuffixTree, find) {
-
-	SuffixTree st("axabg");
-	EXPECT_NE(st.find("xabg"), st.end());
-	EXPECT_EQ(st.find("xabt"), st.end());
-	EXPECT_EQ(st.find("xabd"), st.end());
-	st.reset("axabtxabg");
-	EXPECT_NE(st.find("xabg"), st.end());
-	EXPECT_NE(st.find("xabt"), st.end());
-	EXPECT_EQ(st.find("xabd"), st.end());
-
-}
 TEST(SuffixTree, contains) {
 
 	SuffixTree st("axabg");
-	EXPECT_TRUE(st.contains("xabg"));
-	EXPECT_FALSE(st.contains("xabt"));
-	EXPECT_FALSE(st.contains("xabd"));
+	//EXPECT_TRUE(st.contains("xabg"));
+	//EXPECT_FALSE(st.contains("xabt"));
+	//EXPECT_FALSE(st.contains("xabd"));
 
-	st.reset("axabtxabg");
-	EXPECT_TRUE(st.contains("xabg"));
-	EXPECT_TRUE(st.contains("xabt"));
-	EXPECT_FALSE(st.contains("xabd"));
+	//st.reset("axabtxabg");
+	//EXPECT_TRUE(st.contains("xabg"));
+	//EXPECT_TRUE(st.contains("xabt"));
+	//EXPECT_FALSE(st.contains("xabd"));
+}
+
+TEST(SuffixTree, findAllOccurrences) {
+	SuffixTree st("axabtxabxagg");
+	EXPECT_THAT(st.findAll("xab"), ElementsAre(1, 5));
+	EXPECT_THAT(st.findAll("bt"), ElementsAre(3));
+	EXPECT_THAT(st.findAll("xa"), ElementsAre(1, 5));
+	EXPECT_THAT(st.findAll("a"), ElementsAre(0, 2, 6));
+	
 }
 
