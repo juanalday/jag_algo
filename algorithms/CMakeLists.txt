@@ -1,4 +1,3 @@
-
 add_library(jag_algorithm INTERFACE 
   lcp_array.hpp
   suffix_array.hpp
