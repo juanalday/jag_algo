@@ -99,27 +99,12 @@ TEST(SuffixTree, DISABLED_Constructor) {
 TEST(SuffixTree, contains) {
 
 	SuffixTree st("axabg");
-	//EXPECT_TRUE(st.contains("xabg"));
-	//EXPECT_FALSE(st.contains("xabt"));
-	//EXPECT_FALSE(st.contains("xabd"));
+	EXPECT_TRUE(st.contains("xabg"));
+	EXPECT_FALSE(st.contains("xabt"));
+	EXPECT_FALSE(st.contains("xabd"));
 
-	SuffixTree st1("axabtxabg");
 	st.reset("axabtxabg");
-	//EXPECT_TRUE(st.contains("xabg"));
+	EXPECT_TRUE(st.contains("xabg"));
 	EXPECT_TRUE(st.contains("xabt"));
 	EXPECT_FALSE(st.contains("xabd"));
 }
-
-TEST(DISABLED_SuffixTree, findAll) {
-	{
-		SuffixTree st("banana");
-		auto v = st.findAll("an");
-	}
-	SuffixTree st("axabtxabxagg");
-	EXPECT_THAT(st.findAll("xab"), ElementsAre(1, 5));
-	EXPECT_THAT(st.findAll("bt"), ElementsAre(3));
-	EXPECT_THAT(st.findAll("xa"), ElementsAre(1, 5));
-	EXPECT_THAT(st.findAll("a"), ElementsAre(0, 2, 6));
-	
-}
-
