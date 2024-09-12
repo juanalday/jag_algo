@@ -135,9 +135,9 @@ namespace jag::algo {
 						
 						// New leaf coming out of the new internal node
 						split.at(c) = leafId;
-						split.at(c) = createNode(pos);
 						m_nodes[nextId].m_start += m_activeLength;
-						split.at(m_data[m_nodes[nextId].m_start]) = nextId;
+						auto nextIdStartChar = m_data[m_nodes[nextId].m_start];
+						split.at(nextIdStartChar) = nextId;
 						// We got a new internal node. If there is any internal node created in last extensions
 						// of same phase which is still waiting for it's suffix link reset, do it now.
 						addSuffixLink(splitId); //rule 2
@@ -240,59 +240,6 @@ namespace jag::algo {
 
 			return true;
 		}
-
-		std::vector<int> findAll(std::string const& str) const {
-			int currentNode = 0;
-			size_t patternIndex = 0; // Index to track position in the pattern string
-
-			int lenCounter(0);
-			int lastNodeLen = 0;
-			while (patternIndex < str.size()) {
-				lenCounter = 0;
-				char c = str[patternIndex];
-				// Check if the current node has an edge starting with the current character
-				if (!m_nodes[currentNode].contains(c)) {
-					return {}; // Pattern not found if the edge doesn't exist
-				}
-				++patternIndex;
-				// Move to the next node along the edge labeled with currentChar
-				currentNode = m_nodes[currentNode].at(c);
-				auto const& node = m_nodes[currentNode];
-				lastNodeLen = static_cast<int>(node.m_str.size());
-				auto view = node.m_str; // Substring represented by the edge [start, end]
-				int start = node.m_start; // Start index of the substring represented by the edge
-				int end = (node.m_end == -1) ? static_cast<int>(m_data.size()) : 1 + node.m_end; // Correct end index
-				//for (int i = start; i < end && patternIndex < str.size(); i++, patternIndex++) {
-				//	c = str[patternIndex];
-				//	if (m_data[i] != str[patternIndex]) {
-				//		return {}; // Pattern not found
-				//	}
-				//}
-
-			}
-
-			std::vector<int> result;
-			std::vector<int> nodes = { currentNode };
-
-			while (!nodes.empty()) {
-				int currentNodeId = nodes.back();
-				nodes.pop_back();
-				Node const& currentNode = m_nodes[currentNodeId];
-
-				if (currentNode.isLeaf()) {
-					int startPoint = currentNode.m_start - lenCounter;
-					result.push_back(startPoint);
-				}
-				else {
-					for_each(currentNode.m_edges.begin(), currentNode.m_edges.end(), [&](auto const& edge) {nodes.push_back(edge.second); });
-				}
-			}
-
-			return result;
-		}
-
-	private:
-		
 
 	};
 
