@@ -138,6 +138,7 @@ namespace jag::algo {
 						m_nodes[nextId].m_start += m_activeLength;
 						auto nextIdStartChar = m_data[m_nodes[nextId].m_start];
 						split.at(nextIdStartChar) = nextId;
+
 						// We got a new internal node. If there is any internal node created in last extensions
 						// of same phase which is still waiting for it's suffix link reset, do it now.
 						addSuffixLink(splitId); //rule 2
