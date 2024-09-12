@@ -89,19 +89,19 @@ namespace jag::algo {
 
 					if (m_activeLength == 0)
 						m_activeEdge = pos;
-
+					auto activeEdgeLetter = m_data[m_activeEdge];
 					if (!m_nodes[m_activeNode].contains(m_data[m_activeEdge])) {
 						int leaf = createNode(pos);
 						m_nodes[m_activeNode].at(activeEdge()) = leaf;
 						addSuffixLink(m_activeNode); //Rule 2
 					}
 					else {
-						int internalNodeId = m_nodes[m_activeNode].at(activeEdge());
-						Node& internalNode = m_nodes[internalNodeId];
+						int nextId = m_nodes[m_activeNode].at(activeEdge());
+						Node& internalNode = m_nodes[nextId];
 						// Observation 2:
 						// If at some point active_length is greater or equal to the length of current edge(edge_length),
 						// we move our active point down until edge_length is strictly greater than active_length.
-						if (walkDown(internalNodeId))
+						if (walkDown(nextId))
 							continue;
 						// Observation 1:
 						// When the final suffix we need to insert is found to exist in the tree already, 
@@ -124,30 +124,25 @@ namespace jag::algo {
 						// and we connect the new internal node with the old one through the new leaf node.
 						// We also create a suffix link from the old internal node to the new one.
 						// The new internal node will have an edge for the new character,
-						/*
-						int splitId = createNode(m_nodes[activeEdgeId].m_start, m_nodes[activeEdgeId].m_start + m_activeLength);
-						m_nodes[m_activeNode].at(activeEdge()) = splitId; // Now activenode has an edge pointing here
-						Node& split = m_nodes.back();
-						// New leaf coming out of the new internal node
-						split.at(c) = createNode(pos);
-						m_nodes[activeEdgeId].m_start += m_activeLength;
-						split.at(m_data[m_nodes[activeEdgeId].m_start]) = activeEdgeId;
-						addSuffixLink(splitId); //rule 2
-						*/
-						// I reuse the bucket of the old node for the internal node. Looks better in paper..
-						// We copy the node we are going to split
-						char activeLetter = m_data[internalNode.m_start]; // I will need this later
-						m_nodes.push_back(internalNode); //full copy
-						int splitId = static_cast<int>(m_nodes.size() - 1);
-						Node& splitNode = m_nodes.back();
+						
+						int splitId = createNode(m_nodes[nextId].m_start, m_nodes[nextId].m_start + m_activeLength);
 						int leafId = createNode(pos);
-						Node& leafNode = m_nodes.back();
-						//Adjust length
-						internalNode.setLength(m_activeLength);
-						m_nodes[splitId].m_start += m_activeLength;
-						// The internal node now will point to the 'old' activeEdge and the new character c
-						internalNode.at(c) = leafId;
-						internalNode.at(activeLetter) = splitId;
+						Node& activeNode = m_nodes[m_activeNode];
+						Node& split = m_nodes[splitId];
+						Node& leaf = m_nodes.back();
+
+						activeNode.at(activeEdge()) = splitId; // Now activenode has an edge pointing here
+						
+						// New leaf coming out of the new internal node
+						split.at(c) = leafId;
+						split.at(c) = createNode(pos);
+						m_nodes[nextId].m_start += m_activeLength;
+						split.at(m_data[m_nodes[nextId].m_start]) = nextId;
+						// We got a new internal node. If there is any internal node created in last extensions
+						// of same phase which is still waiting for it's suffix link reset, do it now.
+						addSuffixLink(splitId); //rule 2
+						
+
 					}
 					--m_remainder;
 					// Rule 1: If after an insertion from the active node = root, the active length is greater than 0, then:
@@ -227,13 +222,11 @@ namespace jag::algo {
 			const_iterator nodeIter = m_nodes.begin(); // Start from the root node
 			while (patternIndex < str.size()) {
 				char c = str[patternIndex];
-				// Check if the current node has an edge starting with the current character
-				if (!nodeIter->contains(c)) {
-					return false; // Pattern not found if the edge doesn't exist
-				}
-				// Move to the next node along the edge labeled with currentChar
-				int nextNode = nodeIter->m_edges.at(c);
-				nodeIter = next(m_nodes.begin(), nextNode);
+				if (!nodeIter->contains(c))
+					return false;
+				int nextNode = nodeIter->m_edges.at(c); // Just for debugging purposes
+				nodeIter = next(m_nodes.begin(), nodeIter->m_edges.at(c));
+
 				auto& node = *nodeIter;
 				auto view = node.m_str; // Substring represented by the edge [start, end]
 				int start = node.m_start; // Start index of the substring represented by the edge
@@ -243,7 +236,6 @@ namespace jag::algo {
 						return false; // Pattern not found
 					}
 				}
-
 			}
 
 			return true;
