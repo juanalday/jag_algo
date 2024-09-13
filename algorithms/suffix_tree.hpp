@@ -130,13 +130,14 @@ namespace jag::algo {
 						Node& split = m_nodes[splitId];
 						Node& leaf = m_nodes.back();
 
+						
+						// New leaf coming out of the new internal node
+						m_nodes[nextId].m_start += m_activeLength;
 						auto nextIdStartChar = m_data[m_nodes[nextId].m_start];
 
-						// New leaf coming out of the new internal node
 						activeNode.at(activeEdgeLetter) = splitId; // Now activenode has an edge pointing here
 						split.at(c) = leafId;
 						split.at(nextIdStartChar) = nextId;
-						m_nodes[nextId].m_start += m_activeLength;
 
 						// We got a new internal node. If there is any internal node created in last extensions
 						// of same phase which is still waiting for it's suffix link reset, do it now.
