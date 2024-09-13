@@ -89,15 +89,14 @@ namespace jag::algo {
 
 					if (m_activeLength == 0)
 						m_activeEdge = pos;
-					auto activeEdgeLetter = m_data[m_activeEdge];
-					if (!m_nodes[m_activeNode].contains(m_data[m_activeEdge])) {
+					char activeEdgeLetter = m_data[m_activeEdge];
+					if (!m_nodes[m_activeNode].contains(activeEdgeLetter)) {
 						int leaf = createNode(pos);
-						m_nodes[m_activeNode].at(activeEdge()) = leaf;
+						m_nodes[m_activeNode].at(activeEdgeLetter) = leaf;
 						addSuffixLink(m_activeNode); //Rule 2
 					}
 					else {
-						int nextId = m_nodes[m_activeNode].at(activeEdge());
-						Node& internalNode = m_nodes[nextId];
+						int nextId = m_nodes[m_activeNode].at(activeEdgeLetter);
 						// Observation 2:
 						// If at some point active_length is greater or equal to the length of current edge(edge_length),
 						// we move our active point down until edge_length is strictly greater than active_length.
@@ -106,7 +105,7 @@ namespace jag::algo {
 						// Observation 1:
 						// When the final suffix we need to insert is found to exist in the tree already, 
 						// the tree itself is not changed at all(we only update the active point and remainder).
-						if (m_data[internalNode.m_start + m_activeLength] == c) {
+						if (m_data[m_nodes[nextId].m_start + m_activeLength] == c) {
 							++m_activeLength;
 							// Observation 3:
 							// When the symbol we want to add to the tree is already on the edge, 
@@ -131,7 +130,7 @@ namespace jag::algo {
 						Node& split = m_nodes[splitId];
 						Node& leaf = m_nodes.back();
 
-						activeNode.at(activeEdge()) = splitId; // Now activenode has an edge pointing here
+						activeNode.at(activeEdgeLetter) = splitId; // Now activenode has an edge pointing here
 						
 						// New leaf coming out of the new internal node
 						split.at(c) = leafId;
@@ -198,7 +197,6 @@ namespace jag::algo {
 			return static_cast<int>(m_nodes.size()) - 1;
 		}
 
-		char activeEdge() const { return m_data[m_activeEdge]; }
 		void addSuffixLink(int node) {
 			if (m_needSL > 0) m_nodes[m_needSL].m_link = node;
 			m_needSL = node;
