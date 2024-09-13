@@ -7,7 +7,7 @@
 using jag::algo::SuffixTree;
 using ::testing::ElementsAre;
 
-TEST(SuffixTree, DISABLED_Constructor) {
+TEST(SuffixTree, Constructor) {
 	{
 		SuffixTree st("aa");
 		EXPECT_EQ(st.size(), 5);

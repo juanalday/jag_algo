@@ -36,10 +36,12 @@ namespace jag::algo {
 			const_iterator end() const noexcept { return m_edges.end(); }
 			std::string_view const& str() const noexcept { return m_str; }
 			int start() const noexcept { return m_start; }
-			void setLength(int len) noexcept { m_end = m_start + len; }
+			void setLength(int len) noexcept { m_end = m_start + len; m_str = m_str.substr(0, len); }
 
 			int edgeLength() const noexcept { return static_cast<int>(m_str.size()); }
 			int edgeLength(int pos) const noexcept { return std::max(m_end, pos + 1) - m_start; }
+
+			void clear() noexcept { m_edges.clear(); m_start = 0; m_end = 0;}
 
 			void adjust(std::string const& m_data) {
 				m_str = std::string_view(m_data);
@@ -85,11 +87,14 @@ namespace jag::algo {
 				char c = m_data[pos];
 				m_needSL = 0;
 				++m_remainder;
+
 				while (m_remainder > 0) {
 
 					if (m_activeLength == 0)
 						m_activeEdge = pos;
+
 					char activeEdgeLetter = m_data[m_activeEdge];
+
 					if (!m_nodes[m_activeNode].contains(activeEdgeLetter)) {
 						int leaf = createNode(pos);
 						m_nodes[m_activeNode].at(activeEdgeLetter) = leaf;
@@ -123,6 +128,8 @@ namespace jag::algo {
 						// and we connect the new internal node with the old one through the new leaf node.
 						// We also create a suffix link from the old internal node to the new one.
 						// The new internal node will have an edge for the new character,
+
+						/* THIS IS THE OLD CODE, WHERE THE SPLIT NODE IS A NEW ONE 
 						
 						int splitId = createNode(m_nodes[nextId].m_start, m_nodes[nextId].m_start + m_activeLength);
 						int leafId = createNode(pos);
@@ -142,7 +149,30 @@ namespace jag::algo {
 						// We got a new internal node. If there is any internal node created in last extensions
 						// of same phase which is still waiting for it's suffix link reset, do it now.
 						addSuffixLink(splitId); //rule 2
-						
+						*/
+
+						// New code, I reuse the old node for the split node (I like the topology of the tree better)
+
+						m_nodes.push_back(m_nodes[nextId]); // Copy the node, I want to reuse the bucket for the split node
+						int leafId = createNode(pos);
+						int splitId = leafId - 1;
+
+						Node& internalNode = m_nodes[nextId];
+						Node& split = m_nodes[splitId];
+						Node& leaf = m_nodes.back();
+
+						internalNode.setLength(m_activeLength);
+						split.m_start += m_activeLength;
+						//split.adjust(m_data);
+
+						char activeLetter = m_data[split.m_start];
+						// The internal node now will point to the 'old' activeEdge and the new character c
+						internalNode.at(c) = leafId;
+						internalNode.at(activeLetter) = splitId;
+						// We got a new internal node. If there is any internal node created in last extensions
+						// of same phase which is still waiting for it's suffix link reset, do it now.
+						addSuffixLink(splitId); // rule 2
+
 
 					}
 					--m_remainder;
